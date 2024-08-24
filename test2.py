@@ -2,6 +2,8 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
+"""Bu kod çizgi oluşturma konusunda son eklenen duruma göre hazırlanmış bir kod."""
+
 def detect_line(image_path):
     # Görüntüyü oku
     img = cv2.imread(image_path)
@@ -32,10 +34,10 @@ def detect_line(image_path):
         x2 = int(x0 - 1000 * (-b))
         y2 = int(y0 - 1000 * (a))
 
-        if x1 > mid_x or x2 > mid_x: # Çizginin sağ tarafa eğik bir şekilde olduğuna dair kontrol 
+        if x1 > mid_x or x2 > mid_x: 
             right_side_lines.append((x1, y1, x2, y2))
     
-    def merge_lines(lines, threshold=30): # Birden fazla kesişen çizgilerin indirgenmesi
+    def merge_lines(lines, threshold=30): 
         merged_lines = []
         used = [False] * len(lines)
         
@@ -49,18 +51,18 @@ def detect_line(image_path):
                 x3, y3, x4, y4 = line2
                 
                 if (np.linalg.norm(np.array([x1, y1]) - np.array([x3, y3])) < threshold and 
-                    np.linalg.norm(np.array([x2, y2]) - np.array([x4, y4])) < threshold): # Çizgilerin mesafe kontrolü
+                    np.linalg.norm(np.array([x2, y2]) - np.array([x4, y4])) < threshold): 
                     
                     x1, y1 = min((x1, y1), (x3, y3))
                     x2, y2 = max((x2, y2), (x4, y4))
-                    used[j] = True # Çizgileri birleştirme 
+                    used[j] = True 
             
             merged_lines.append((x1, y1, x2, y2))
             used[i] = True
         
         return merged_lines
 
-    merged_lines = merge_lines(right_side_lines) # Sağ taraftaki çizginin birleştirilmesi
+    merged_lines = merge_lines(right_side_lines) 
 
     img_lines = img.copy()
     if merged_lines:
